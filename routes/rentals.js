@@ -7,8 +7,8 @@ const { RequestTypes } = require('../utils');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const rentals = Rental.find();
-  console.log('rentals', rentals);
+  const rentals = await Rental.find();
+
   return res.send(rentals);
 });
 
