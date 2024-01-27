@@ -1,0 +1,70 @@
+version: '3'
+services:
+  mongo1:
+    image: mongo
+    container_name: mongo1
+    volumes:
+      - "mongo1_data:/data/db"
+      - "mongo1_config:/data/configdb"
+    ports:
+      - "9042:27017"
+    command: mongod --replSet myReplicaSet --bind_ip localhost,mongo1
+    networks:
+      - mongo-cluster-local
+
+  mongo2:
+    image: mongo
+    container_name: mongo2
+    volumes:
+      - "mongo2_data:/data/db"
+      - "mongo2_config:/data/configdb"
+    ports:
+      - "9142:27017"
+    command: mongod --replSet myReplicaSet --bind_ip localhost,mongo2
+    networks:
+      - mongo-cluster-local
+
+  mongo3:
+    image: mongo
+    container_name: mongo3
+    volumes:
+      - "mongo3_data:/data/db"
+      - "mongo3_config:/data/configdb"
+    ports:
+      - "9242:27017"
+    command: mongod --replSet myReplicaSet --bind_ip localhost,mongo3
+    networks:
+      - mongo-cluster-local
+
+volumes:
+  mongo1_data:
+  mongo1_config:
+  mongo2_data:
+  mongo2_config:
+  mongo3_data:
+  mongo3_config:
+
+networks:
+  mongo-cluster-local:
+    driver: bridge
+
+#-> Documentation from Mongo: https://www.mongodb.com/compatibility/deploying-a-mongodb-cluster-with-docker
+
+#-> After build 3 containers run:
+
+# docker exec -it mongo1 mongosh --eval "rs.initiate({
+#  _id: \"myReplicaSet\",
+#  members: [
+#    {_id: 0, host: \"mongo1\"},
+#    {_id: 1, host: \"mongo2\"},
+#    {_id: 2, host: \"mongo3\"}
+#  ]
+# })"
+
+#-> check if everything is okay with the next command:
+
+# docker exec -it mongo1 mongosh --eval "rs.status()"
+
+#-> If is replica and you want to connect to the DB, you need to connect to the PRIMARY node, example: mongodb://127.0.0.1:27019/?directConnection=true
+
+# TODO: Tengo que connectar el proyecto y "crear la tabla en el nodo inicial o conectar los 3 nodos"

@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "65994015626c636e5580783a"
+  },
+  "isGold": true,
+  "name": "Test 2",
+  "phone": "33-333-3333",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6599433e3e0af501d03ba661"
+  },
+  "isGold": true,
+  "name": "Test 3",
+  "phone": "33-333-3333",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6599478bbe5f1091d6785bc1"
+  },
+  "isGold": true,
+  "name": "Test 4",
+  "phone": "33-333-3333",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659eead3ee051833ac904651"
+  },
+  "isGold": true,
+  "name": "Leoncibio",
+  "phone": "111-111-111",
+  "__v": 0
+}]

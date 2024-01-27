@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { genreSchema } = require('./genre');
 const { isValidId } = require('../utils');
+
 
 const Rental = new mongoose.model(
   'Rental',

@@ -1,8 +1,10 @@
 const express = require('express');
+
 const { Rental, validate } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
 const { RequestTypes } = require('../utils');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -25,20 +27,35 @@ router.post('/', async (req, res) => {
   if (!movie.numberInStock)
     return res.status(404).send('This movie is not in stock.');
 
-  movie.numberInStock = movie.numberInStock - 1;
-
   let rental = new Rental({
-    customer: customer,
-    movie: movie,
+    customer: {
+      isGold: customer.isGold,
+      name: customer.name,
+      phone: customer.phone,
+    },
+    movie: {
+      title: movie.title,
+      dailyRentalRate: movie.dailyRentalRate,
+    },
     dateOut: req.body.dateOut,
     dateReturned: req.body.dateReturned,
     rentalFee: req.body.rentalFee,
   });
 
-  await movie.save();
-  rental = await rental.save();
-
-  res.send(rental);
+  movie.numberInStock = movie.numberInStock - 1;
+  const session = await mongoose.startSession();
+  try {
+    await session.withTransaction(async () => {
+      await movie.save({ session });
+      rental = await rental.save({ session });
+      res.send(rental);
+    });
+  } catch (error) {
+    console.error('Transaction error:', error);
+    return res.status(400).send('Something failed');
+  } finally {
+    session.endSession();
+  }
 });
 
 module.exports = router;

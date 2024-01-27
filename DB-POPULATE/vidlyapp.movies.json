@@ -1,0 +1,47 @@
+[
+  {
+    "_id": {
+      "$oid": "659ed88ad313c5636b179297"
+    },
+    "title": "El titulo 2",
+    "genre": {
+      "type": "Action",
+      "_id": {
+        "$oid": "659c467959ac074173a58a22"
+      }
+    },
+    "numberInStock": 4,
+    "dailyRentalRate": 0,
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659eeb05ee051833ac904656"
+    },
+    "title": "Matrix",
+    "genre": {
+      "type": "Sci-fi",
+      "_id": {
+        "$oid": "659eeaf8ee051833ac904653"
+      }
+    },
+    "numberInStock": 4,
+    "dailyRentalRate": 1,
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "659f0db9e08c530502fbec33"
+    },
+    "title": "Matrix 2",
+    "genre": {
+      "type": "Sci-fi",
+      "_id": {
+        "$oid": "659eeaf8ee051833ac904653"
+      }
+    },
+    "numberInStock": 5,
+    "dailyRentalRate": 0,
+    "__v": 0
+  }
+]
