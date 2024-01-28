@@ -1,3 +1,5 @@
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const debugApp = require('debug')('app');
 const debugDB = require('debug')('database');
 const morgan = require('morgan');
@@ -22,10 +24,6 @@ app.use(morgan('tiny'));
 debugApp('Morgan enabled');
 
 mongoose
-  .connect(
-    'mongodb://localhost:9142/vidlyapp?directConnection=true'
-  )
+  .connect('mongodb://localhost:9242/vidlyapp?directConnection=true')
   .then(() => debugDB('Connected to Vidly database...'))
   .catch((err) => debugDB(err));
-
-

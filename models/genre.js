@@ -4,19 +4,29 @@ const Joi = require('joi');
 const genreSchema = new mongoose.Schema({
   type: {
     type: String,
-    require: true,
+    required: true,
     minLength: 3,
   },
 });
 
 const Genre = new mongoose.model('Genre', genreSchema);
 
-const validate = (genre) => {
+const validate = (requestType, genre) => {
   const schema = Joi.object({
-    type: Joi.string().min(3).required(),
+    id: Joi.objectId().alter({
+      get: (schema) => schema.required(),
+      put: (schema) => schema.required(),
+      delete: (schema) => schema.required(),
+    }),
+    type: Joi.string()
+      .min(3)
+      .alter({
+        post: (schema) => schema.required(),
+        put: (schema) => schema.required(),
+      }),
   });
 
-  return schema.validate(genre);
+  return schema.tailor(requestType).validate(genre);
 };
 
 module.exports = {

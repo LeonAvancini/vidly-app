@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const { genreSchema } = require('./genre');
-const { isValidId } = require('../utils');
 
 const Movie = new mongoose.model(
   'Movie',
@@ -15,11 +14,10 @@ const Movie = new mongoose.model(
 
 const validate = (requestType, movie) => {
   const schema = Joi.object({
-    id: Joi.string().custom((value, helpers) => {
-      if (!isValidId(value)) {
-        return helpers.error('any.invalid');
-      }
-      return value;
+    id: Joi.objectId().alter({
+      get: (schema) => schema.required(),
+      delete: (schema) => schema.required(),
+      put: (schema) => schema.required(),
     }),
     title: Joi.string()
       .min(5)
@@ -27,16 +25,9 @@ const validate = (requestType, movie) => {
       .alter({
         post: (schema) => schema.required(),
       }),
-    genreId: Joi.string()
-      .custom((value, helpers) => {
-        if (!isValidId(value)) {
-          return helpers.error('any.invalid');
-        }
-        return value;
-      })
-      .alter({
-        post: (schema) => schema.required(),
-      }),
+    genreId: Joi.objectId().alter({
+      post: (schema) => schema.required(),
+    }),
     numberInStock: Joi.number()
       .min(0)
       .alter({

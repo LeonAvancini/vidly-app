@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { isValidId } = require('../utils');
-
 
 const Rental = new mongoose.model(
   'Rental',
@@ -29,22 +27,8 @@ const Rental = new mongoose.model(
 
 const validate = (requestType, rental) => {
   const schema = Joi.object({
-    customerId: Joi.string()
-      .custom((value, helpers) => {
-        if (!isValidId(value)) {
-          return helpers.error('any.invalid');
-        }
-        return value;
-      })
-      .required(),
-    movieId: Joi.string()
-      .custom((value, helpers) => {
-        if (!isValidId(value)) {
-          return helpers.error('any.invalid');
-        }
-        return value;
-      })
-      .required(),
+    customerId: Joi.objectId().required(),
+    movieId: Joi.objectId().required(),
     dateOut: Joi.date(),
     dateReturned: Joi.date(),
     rentalFee: Joi.number().min(0),

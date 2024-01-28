@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const { error } = validate(RequestTypes.Delete, req.params);
+  const { error } = validate(RequestTypes.Get, req.params);
   if (error) return res.status(400).send(error.details[0].message);
 
   const movie = await Movie.findById(req.params.id);

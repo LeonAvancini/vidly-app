@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
-const Joi = require("joi");
+const mongoose = require('mongoose');
+const Joi = require('joi');
 
 const Customer = new mongoose.model(
-  "Customer",
+  'Customer',
   new mongoose.Schema({
     isGold: { type: Boolean, default: false },
     name: { type: String, required: true, min: 5, max: 50 },
@@ -12,6 +12,11 @@ const Customer = new mongoose.model(
 
 const validate = (requestType, customer) => {
   const schema = Joi.object({
+    id: Joi.objectId().alter({
+      get: (schema) => schema.required(),
+      put: (schema) => schema.required(),
+      delete: (schema) => schema.required(),
+    }),
     isGold: Joi.boolean(),
     name: Joi.string()
       .min(5)

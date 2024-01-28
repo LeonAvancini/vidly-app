@@ -1,6 +1,6 @@
 const express = require('express');
 const { Genre, validate } = require('../models/genre');
-const { isValidId } = require('../utils');
+const { RequestTypes } = require('../utils');
 
 const router = express.Router();
 
@@ -10,9 +10,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  if (!isValidId(req.params.id)) {
-    return res.status(400).send('Invalid ID');
-  }
+  const { error } = validate(RequestTypes.Get, req.params);
+  if (error) return res.status(400).send(error.message);
 
   const genre = await Genre.findById(req.params.id);
   if (!genre)
@@ -24,7 +23,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { error } = validate(req.body);
+  const { error } = validate(RequestTypes.Post, req.body);
   if (error) return res.status(400).send(error.message);
 
   let genre = new Genre({
@@ -36,11 +35,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  if (!isValidId(req.params.id)) {
-    return res.status(400).send('Invalid ID');
-  }
-
-  const { error } = validate(req.body);
+  const { error } = validate(RequestTypes.Put, { ...req.params, ...req.body });
   if (error) return res.status(400).send(error.message);
 
   const genre = await Genre.findByIdAndUpdate(
@@ -55,9 +50,8 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  if (!isValidId(req.params.id)) {
-    return res.status(400).send('Invalid ID');
-  }
+  const { error } = validate(RequestTypes.Delete, req.params);
+  if (error) return res.status(400).send(error.message);
 
   const genre = await Genre.findByIdAndDelete(req.params.id);
 
