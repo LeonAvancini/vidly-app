@@ -12,6 +12,7 @@ const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
 const users = require('./routes/users');
+const auth = require('./routes/auth');
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => debugApp(`Server listen on port ${PORT}...`));
@@ -22,10 +23,15 @@ app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
+app.use('/api/auth', auth);
 app.use(morgan('tiny'));
 debugApp('Morgan enabled');
 
+if (!process.env.JWT_PRIVATE_KEY) {
+  console.error('jwtPrivateKey is not defined');
+  process.exit(1)
+}
 mongoose
-  .connect('mongodb://localhost:9242/vidlyapp?directConnection=true')
+  .connect('mongodb://localhost:9142/vidlyapp?directConnection=true')
   .then(() => debugDB('Connected to Vidly database...'))
   .catch((err) => debugDB(err));
