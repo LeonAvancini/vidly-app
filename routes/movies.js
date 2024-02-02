@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const express = require('express');
 const { Movie, validate } = require('../models/movie');
 const { Genre } = require('../models/genre');
@@ -20,7 +21,7 @@ router.get('/:id', async (req, res) => {
   return res.send(movie);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validate(RequestTypes.Post, req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
   res.send(movie);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   const { error } = validate(RequestTypes.Put, { ...req.params, ...req.body });
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -59,7 +60,7 @@ router.put('/:id', async (req, res) => {
   res.send(result);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const { error } = validate(RequestTypes.Delete, req.params);
   if (error) return res.status(400).send(error.details[0].message);
 
