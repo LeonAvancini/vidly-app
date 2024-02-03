@@ -1,3 +1,6 @@
+require('express-async-errors');
+const winston = require('winston');
+const error = require('./middleware/error');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const debugApp = require('debug')('app');
@@ -14,6 +17,8 @@ const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => debugApp(`Server listen on port ${PORT}...`));
 
@@ -24,14 +29,17 @@ app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+
 app.use(morgan('tiny'));
 debugApp('Morgan enabled');
 
+app.use(error);
+
 if (!process.env.JWT_PRIVATE_KEY) {
   console.error('jwtPrivateKey is not defined');
-  process.exit(1)
+  process.exit(1);
 }
 mongoose
-  .connect('mongodb://localhost:9142/vidlyapp?directConnection=true')
+  .connect('mongodb://localhost:9042/vidlyapp?directConnection=true')
   .then(() => debugDB('Connected to Vidly database...'))
   .catch((err) => debugDB(err));
