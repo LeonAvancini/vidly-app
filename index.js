@@ -1,5 +1,6 @@
 require('express-async-errors');
 const winston = require('winston');
+require('winston-mongodb');
 const error = require('./middleware/error');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -18,6 +19,12 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(
+  new winston.transports.MongoDB({
+    db: 'mongodb://localhost:9042/vidlyapp?directConnection=true',
+    level: 'error',
+  })
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => debugApp(`Server listen on port ${PORT}...`));
