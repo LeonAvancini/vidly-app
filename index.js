@@ -4,9 +4,6 @@ require('winston-mongodb');
 const error = require('./middleware/error');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
-const debugApp = require('debug')('app');
-const debugDB = require('debug')('database');
-const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -18,6 +15,16 @@ const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 
+process.on('uncaughtException', (ex) => {
+  winston.error(ex.message, ex);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (ex) => {
+  winston.error(ex.message, ex);
+  process.exit(1);
+});
+
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 winston.add(
   new winston.transports.MongoDB({
@@ -27,7 +34,7 @@ winston.add(
 );
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => debugApp(`Server listen on port ${PORT}...`));
+app.listen(PORT, () => console.log(`Server listen on port ${PORT}...`));
 
 app.use(express.json());
 app.use('/api/genres', genres);
@@ -37,9 +44,6 @@ app.use('/api/rentals', rentals);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 
-app.use(morgan('tiny'));
-debugApp('Morgan enabled');
-
 app.use(error);
 
 if (!process.env.JWT_PRIVATE_KEY) {
@@ -48,5 +52,5 @@ if (!process.env.JWT_PRIVATE_KEY) {
 }
 mongoose
   .connect('mongodb://localhost:9042/vidlyapp?directConnection=true')
-  .then(() => debugDB('Connected to Vidly database...'))
-  .catch((err) => debugDB(err));
+  .then(() => console.log('Connected to Vidly database...'))
+  .catch((err) => console.log(err));
